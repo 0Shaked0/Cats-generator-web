@@ -4,7 +4,7 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Favorites from './pages/Favorites';
 import About from './pages/About';
-import NotFound from './pages/NotFound'; // Import the NotFound component
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
