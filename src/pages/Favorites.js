@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { catOptions } from "../options";
 import { apiKey } from "../env";
 import "../App.css"; // Import CSS file
@@ -22,12 +22,7 @@ export default function Favorites() {
     }
   };
 
-  useEffect(() => {
-    fetchData();
-    populateArray();
-  }, []);
-
-  const populateArray = async () => {
+  const populateArray = useCallback(async () => {
     try {
       const promises = favorites?.map(async (favorite) => {
         const response = await fetch(
@@ -44,7 +39,12 @@ export default function Favorites() {
     } catch (error) {
       console.error("error during populating array", error);
     }
-  };
+  }, [favorites]);
+
+  useEffect(() => {
+    fetchData();
+    populateArray();
+  }, [populateArray]);
 
   const handleDropdownChange = (event) => {
     setDropdownValue(event.target.value);
@@ -77,26 +77,21 @@ export default function Favorites() {
   return (
     <div>
       <h1 className="title-page">Favorites</h1>
-      
-        
-          <button className="favorites-button" onClick={populateArray}>
-            Load favorites
-          </button>
-        
-          <select
-    className="filter-dropdown" // Add the class name directly to the select element
-    value={dropdownValue}
-    onChange={handleDropdownChange}
-  >
-    <option value="">Show all Favorites</option>
-    <option value="gif">GIFs</option>
-    <option value="jpg">JPGs</option>
-  </select>
-  
-        <button className="delete-all-button" onClick={handleDeleteAllFavorites}>
-          Delete All Favorites
-        </button>
-      
+      <button className="favorites-button" onClick={populateArray}>
+        Load favorites
+      </button>
+      <button className="delete-all-button" onClick={handleDeleteAllFavorites}>
+        Delete All Favorites
+      </button>
+      <select
+        className="filter-dropdown"
+        value={dropdownValue}
+        onChange={handleDropdownChange}
+      >
+        <option value="">Show all Favorites</option>
+        <option value="gif">GIFs</option>
+        <option value="jpg">JPGs</option>
+      </select>
       <div className="favorite-image-grid">
         {catData
           ?.filter((cat) => cat.url.endsWith(filterType))
